@@ -1,0 +1,128 @@
+<!doctype html>
+<html ng-app="contacts">
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	</head>
+	<body ng-init="view = 'add'">
+		<ul class="nav justify-content-center mb-3">
+			<li class="nav-item">
+				<a class="nav-link active" href="#" ng-click="view = 'add'">Registration</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#" ng-click="view = 'list'">View List of Contacts</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#" ng-click="view = 'test'">Unit Test</a>
+			</li>
+		</ul>
+		<div class="container" ng-controller="AddContactController as ctrl" ng-if="view == 'add'">
+			<form id="contactForm" name="contactForm" ng-submit="ctrl.submit(); contactForm.$setPristine();">
+				<div class="form-group">
+					<label for="first_name">First Name</label>
+					<input class="form-control" id="first_name" name="first_name" ng-model="ctrl.first_name" type="text" />
+					<div class="invalid-feedback" ng-show="ctrl.validation_errors.indexOf('first_name') >= 0">
+						Please provide your first name.
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="last_name">Last Name</label>
+					<input class="form-control" id="last_name" name="last_name" ng-model="ctrl.last_name" type="text" />
+					<div class="invalid-feedback" ng-show="ctrl.validation_errors.indexOf('last_name') >= 0">
+						Please provide your last name.
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="email_address">Email Address</label>
+					<input class="form-control"  id="email_address" name="email_address" ng-model="ctrl.email_address" type="email" />
+					<div class="invalid-feedback"  ng-show="contactForm.email_address.$error.email || ctrl.validation_errors.indexOf('email_address') >= 0">
+						Please provide a valid email address.
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="phone_number">Phone Number</label>
+					<input class="form-control" id="phone_number" name="phone_number" ng-model="ctrl.phone_number" type="text" />
+					<div class="invalid-feedback" ng-show="ctrl.validation_errors.indexOf('phone_number') >= 0">
+						Please provide a phone number.
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="mailing_address">Mailing Address</label>
+					<input class="form-control" id="mailing_address" name="mailing_address" ng-model="ctrl.mailing_address" type="text" />
+					<div class="invalid-feedback" ng-show="ctrl.validation_errors.indexOf('mailing_address') >= 0">
+						Please provide a mailing address.
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="form-check">
+						<label class="form-check-label" for="subscribe_activities"><input class="form-check-input" id="subscribe_activities" ng-model="ctrl.subscribe_activities" type="checkbox" /> Please notify me about upcoming activities.</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label" for="subscribe_classes"><input class="form-check-input" id="subscribe_classes" ng-model="ctrl.subscribe_classes" type="checkbox" /> Please notify me about upcoming classes.</label>
+					</div>
+					<div class="form-check">
+						<label class="form-check-label" for="subscribe_booklet"><input class="form-check-input" id="subscribe_booklet" ng-model="ctrl.subscribe_booklet" type="checkbox" /> Please mail me a copy of the seasonal booklet for the schedules.</label>
+					</div>
+				</div>
+
+				<div class="text-right">
+					<button class="btn btn-primary" type="submit">Submit</button>	
+				</div>
+
+				<div class="alert alert-success" role="alert" ng-show="ctrl.submitted && contactForm.$pristine">
+					Contact Added
+				</div>
+			</form>
+		</div>
+		<div class="container" ng-controller="ListContactController as list" ng-if="view == 'list'" ng-init="list.load()">
+			<div class="row">
+				<div class="col-sm">Name</div>
+				<div class="col-sm">Email</div>
+				<div class="col-sm">Phone</div>
+				<div class="col-sm">Address</div>
+				<div class="col-sm">Subscriptions</div>
+			</div>
+			<div class="row" ng-repeat="person in list.people">
+				<div class="col-sm">{{person.first_name}} {{person.last_name}}</div>
+				<div class="col-sm"><span ng-repeat="contact in person.email_addresses">{{contact.contact_value}}</span></div>
+				<div class="col-sm"><span ng-repeat="contact in person.phone_numbers">{{contact.contact_value}}</span></div>
+				<div class="col-sm"><span ng-repeat="contact in person.mailing_addresses">{{contact.contact_value}}</span></div>
+				<div class="col-sm"><span ng-repeat="subscription in person.subscriptions">{{subscription.type}} </span></div>
+			</div>
+		</div>
+		<div class="container" ng-controller="TestController as test" ng-if="view == 'test'" ng-init="test.load()">
+			<div class="row">
+				<div class="col-sm">Test Add Person</div>
+				<div class="col-sm text-success" ng-if="test.add_person">OK</div>
+				<div class="col-sm text-danger" ng-if="!test.add_person">Fail</div>
+			</div>
+			<div class="row">
+				<div class="col-sm">Test Add Email</div>
+				<div class="col-sm text-success" ng-if="test.add_email">OK</div>
+				<div class="col-sm text-danger" ng-if="!test.add_email">Fail</div>
+			</div>
+			<div class="row">
+				<div class="col-sm">Test Add Phone</div>
+				<div class="col-sm text-success" ng-if="test.add_phone">OK</div>
+				<div class="col-sm text-danger" ng-if="!test.add_phone">Fail</div>
+			</div>
+			<div class="row">
+				<div class="col-sm">Test Add Address</div>
+				<div class="col-sm text-success" ng-if="test.add_address">OK</div>
+				<div class="col-sm text-danger" ng-if="!test.add_address">Fail</div>
+			</div>
+			<div class="row">
+				<div class="col-sm">Test Subscription</div>
+				<div class="col-sm text-success" ng-if="test.add_subscription">OK</div>
+				<div class="col-sm text-danger" ng-if="!test.add_subscription">Fail</div>
+			</div>
+		</div>
+	</body>
+	<script src="https://code.jquery.com/jquery.min.js"></script>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</html>
